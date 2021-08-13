@@ -344,7 +344,7 @@
 
             // Instantiate Feature Layyer
 
-            var vectorTileLayer = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/RDOF_Hexes/VectorTileServer"});
+            var vectorTileLayer = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/904_hexes_2/VectorTileServer"});
 
             var featureLayer = new FeatureLayer({url:"https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/rdof_904_ver3/FeatureServer",
 
@@ -637,7 +637,7 @@ $(document).ready(function(){
 
                     <tr>
 
-                        <td colspan="3"><span class="icon icon-list"></span> <span class="map-legend-name">Rurality Tiers</span>
+                        <td colspan="3"><span class="icon icon-list"></span> <span class="map-legend-name">Locations</span>
 
                             <button id="btn-closeLegend" class="close"><span class="close">&times;</span> <span class="sr-only">Hide legend</span></button>
 
@@ -653,11 +653,11 @@ $(document).ready(function(){
 
                         <td>
 
-                            <div class="key-symbol" style="background-color:#6F6F6F"></div>
+                            <div class="key-symbol" style="background-color:#FFF7EC"></div>
 
                         </td>
 
-                        <td>Extremely Rural</td>
+                        <td>1 - 90</td>
 
                     </tr>
 
@@ -665,11 +665,11 @@ $(document).ready(function(){
 
                         <td>
 
-                            <div class="key-symbol" style="background-color:#803535 "></div>
+                            <div class="key-symbol" style="background-color:#FDD49E "></div>
 
                         </td>
 
-                        <td>Less Rural</td>
+                        <td>91 - 250</td>
 
                     </tr>
 
@@ -677,14 +677,38 @@ $(document).ready(function(){
 
                         <td>
 
-                            <div class="key-symbol" style="background-color:#329AAF"></div>
+                            <div class="key-symbol" style="background-color:#FC8D59"></div>
 
                         </td>
 
-                        <td>Rural</td>
+                        <td>251 - 465</td>
 
                     </tr>
 
+
+                    <tr>
+
+                        <td>
+
+                            <div class="key-symbol" style="background-color:#D7301F"></div>
+
+                        </td>
+
+                        <td>466 - 7835</td>
+
+                    </tr>
+
+                                        <tr>
+
+                        <td>
+
+                            <div class="key-symbol" style="background-color:#7F0000"></div>
+
+                        </td>
+
+                        <td>784 - 2373</td>
+
+                    </tr>
     
 
                 </tbody>
