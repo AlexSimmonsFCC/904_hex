@@ -1,388 +1,710 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
+
 <html>
+
   <head>
+
     <meta charset="utf-8" />
+
     <meta
+
       name="viewport"
+
       content="initial-scale=1,maximum-scale=1,user-scalable=no"
+
     />
-    <title>RHC Rurality Tiers</title>
+
+    <title>904 Locations in Hex</title>
+
+ 
 
     <link
+
       rel="stylesheet"
+
       href="https://js.arcgis.com/4.8/esri/themes/light/main.css"
+
     />
+
     <script src="https://js.arcgis.com/4.8/"></script>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <link rel="stylesheet" href="css/styles.css">
 
+ 
+
     <style>
+
       html,
+
       body,
-      
+
+     
+
       #viewDiv {
+
         padding: 0;
+
         margin: 0;
+
         height: 100%;
+
         width: 100%;
+
       }
+
+     
+
       
-      
+
       #helptext {
+
         border-radius: 10px;
+
         position: fixed;
-        height: 70px;
+
+        height: 15px;
+
         font-family: arial;
+
         margin: 5px;
-        padding: 10px;
+
+        padding: 18px;
+
         z-index: 40;
+
         background: #D3D3D3;
+
         color: #444;
+
         width: auto;
+
         left: 65px;
+
         top: 15px;
+
         -moz-box-shadow: 0 0 10px #888;
+
         -webkit-box-shadow: 0 0 10px #888;
+
         box-shadow: 0 0 10px #888;
+
         border-color: #212223;
+
         border-width: 2px;
+
         border-style: solid;
-             } 
+
+             }
+
       
+
       
+
       #searchbar {
+
         bottom: 20px;
+
         height: 33px;
+
         top: 60px;
+
         margin: 5px;
+
         position: absolute;
+
         text-align: left;
+
         width: 300px;
+
         z-index: 40;
+
         left: 85px;
+
       }
+
+     
+
       
-      
+
        #resultwindow {
+
         border-radius: 10px;
+
         position: fixed;
+
         height: auto;
+
         font-family: arial;
+
         margin: 5px;
+
         padding: 10px;
+
         z-index: 40;
+
         background: #D3D3D3;
+
         color: #444;
+
         width: auto;
+
         left: 65px;
+
         top: 120px;
+
         -moz-box-shadow: 0 0 10px #888;
+
         -webkit-box-shadow: 0 0 10px #888;
+
         box-shadow: 0 0 10px #888;
+
         border-color: #212223;
+
         border-width: 2px;
+
         border-style: solid;
-             } 
+
+             }
+
       
+
       
+
+ 
 
         #loadingbar {
+
         bottom: 20px;
+
         height: 33px;
+
         top: 100px;
+
         margin: 5px;
+
         position: absolute;
+
         text-align: left;
+
         width: 300px;
+
         z-index: 40;
+
         left: 69px;
+
       }
+
+ 
+
   
-  
+
       #show_legend_button {
+
         bottom: 25px;
+
         height: 28px;
+
         margin: 5px;
+
         position: absolute;
+
         text-align: left;
+
         width: 30px;
+
         z-index: 40;
+
         left: 12px;
+
       }
 
+ 
 
+   #hex_count {
 
+        border-radius: 10px;
 
-     
+        position: fixed;
+
+        height: 23px;
+
+        font-family: arial;
+
+        margin: 5px;
+
+        padding: 10px;
+
+        z-index: 40;
+
+        background: #D3D3D3;
+
+        color: #444;
+
+        width: auto;
+
+        left: 65px;
+
+        top: 70px;
+
+        -moz-box-shadow: 0 0 10px #888;
+
+        -webkit-box-shadow: 0 0 10px #888;
+
+        box-shadow: 0 0 10px #888;
+
+        border-color: #212223;
+
+        border-width: 2px;
+
+        border-style: solid;
+
+             }
+
+ 
+
+ 
+
+    
+
       
+
     </style>
 
+ 
+
     <script>
-    
+
+   
+
      
+
     
+
       require(['esri/layers/VectorTileLayer',
+
         "esri/Map","esri/Graphic","esri/symbols/SimpleMarkerSymbol","esri/symbols/SimpleFillSymbol","esri/widgets/Legend","esri/tasks/Locator","esri/geometry/support/webMercatorUtils","esri/geometry/Point",
+
         "esri/views/MapView",
-        "esri/layers/FeatureLayer","esri/widgets/Search", "esri/widgets/Home","esri/tasks/support/Query", "esri/tasks/QueryTask","esri/identity/OAuthInfo", "esri/identity/IdentityManager", "dojo/domReady!"], 
+
+        "esri/layers/FeatureLayer","esri/widgets/Search", "esri/widgets/Home","esri/tasks/support/Query", "esri/tasks/QueryTask","esri/identity/OAuthInfo", "esri/geometry/Circle", "esri/tasks/support/StatisticDefinition", "dojo/domReady!"],
+
       
-      function(VectorTileLayer, Map, Graphic, SimpleMarkerSymbol, SimpleFillSymbol, Legend, Locator, webMercatorUtils, Point, MapView, FeatureLayer, Search, Home, Query, QueryTask, OAuthInfo, esriId) {
+
+      function(VectorTileLayer, Map, Graphic, SimpleMarkerSymbol, SimpleFillSymbol, Legend, Locator, webMercatorUtils, Point, MapView, FeatureLayer, Search, Home, Query, QueryTask, OAuthInfo, Circle,StatisticDefinition ) {
+
         var map = new Map({
+
           basemap: "dark-gray"
+
         });
 
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-// var info = new OAuthInfo({
-//   appId: "fYbup4A0SaJmuhkv",
-//   popup: false
-// });
+ 
 
-// esriId.registerOAuthInfos([info]);
-
+     
 
         
 
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-      
-      
-      
-        
-        
+
         var view = new MapView({
+
           container: "viewDiv",
+
           map: map,
+
           center: [-95.3, 38.397],
+
           zoom: 5
+
         });
-        
+
+       
+
          var home = new Home({
+
          view: view
+
           }, "HomeButton");
+
          view.ui.add(home, "top-left");
 
-         var template = {
-        title: 'Rural Tier'
-      }
-            
-            // Instantiate Feature Layyer
-            var vectorTileLayer = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/RuralityTiersVTL/VectorTileServer"}); 
-            var featureLayer = new FeatureLayer({url:"https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/RuralityTiersAgain/FeatureServer/0", 
-                                                 outFields: ['*'],
-                                                 visible:false,
-                                                 popupTemplate: template});
-            map.add(vectorTileLayer);
-            map.add(featureLayer);
-            
-
-           
-           var search = new Search({container: "searchbar"});
-           resultwindow.style.visibility='hidden';
-           loadingbar.style.visibility='hidden';
-           
-           
-        // Outer Function to Add Point and Retrieve Rurality Tier from Search Bar
-           search.on('search-complete', function(result){
-           
-            // Show Result Window
-            resultwindow.style.visibility='visible'
-              
-            if(result.results && result.results.length > 0 && result.results[0].results && result.results[0].results.length > 0){
-            var geom = result.results[0].results[0].feature.geometry;
-            }        
-            
-            // Set Text if No Rural Tier
-            document.getElementById("resultwindow").innerHTML = 'The address provided is not in a rural tier.';
-            
-            // Clear Point from Previous Query
-            view.graphics.removeAll();
-            
-            // Construct Point Symbol and Add it When Search Completes
-            var point = { type: "point",  longitude: geom.longitude, latitude: geom.latitude};
-            var markerSymbol = { type: "simple-marker",  color: [226, 119, 40]};
-            var pointGraphic = new Graphic({geometry: point, symbol: markerSymbol});
-            view.graphics.add(pointGraphic);
-            
-            // Zoom to New Point
-            view.goTo({center: [geom.longitude, geom.latitude], zoom: 10}, {animate: true, duration: 2000});
-         
-            // Query to Retrieve Rurality Tier.
-            var query = featureLayer.createQuery();
-            query.outFields = ["Tier"];     
-            query.geometry = geom  
-            
-            // Inner Function to Query the Layers and Set HTML Region with Result
-            featureLayer.queryFeatures(query).then(function(response){
-            var attribute = response.features[0].attributes;
-            console.log(response)
-            document.getElementById("resultwindow").innerHTML = "The address provided is located in a: " + "<span style='font-weight:bold; font-size:100%;' >"  + attribute["Tier"] + " Tier" + "</span>";
-            document.getElementById("info") = search;
-             });
-
-       }); 
-         
-     
-
-     
-     
-     
-     
-     
-      // Outer Function to Add Point and Retrieve Rurality Tier from Click Event
-          view.on('click', function (event) {
-          
-         loadingbar.style.visibility='visible';
-         resultwindow.style.visibility='hidden';
-          // Remove Graphics from Previous Click
-           view.graphics.removeAll();
-           
-          
-          // Get Coords on Mouse Click Location
-           var clickcoords = view.toMap({x: event.x, y: event.y});
-          
-          // Construct Point Symbol and Add to Click Location
-           var point = { type: "point",  longitude: clickcoords.longitude, latitude: clickcoords.latitude};
-           var markerSymbol = { type: "simple-marker",  color: [226, 119, 40]};
-           var pointGraphic = new Graphic({geometry: point, symbol: markerSymbol});
-           view.graphics.add(pointGraphic)
-         
-          // Query to Retrieve Rurality Tier.
-           var query = featureLayer.createQuery();
-           query.outFields = ["Tier"];     
-           query.geometry = clickcoords  
-
-
-          // Inner Function to Query the Layers, Get the Address, and Set HTML Region with Result
-           featureLayer.queryFeatures(query).then(function(response){
-           var attribute = response.features[0].attributes;
-           var locator = new Locator("https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
-           var tier = attribute["Tier"]
-       
-           
-            
-           if (tier.indexOf("None") >= 0) {
-           document.getElementById("resultwindow").innerHTML = 'The address provided is not in a rural tier.';
-           loadingbar.style.visibility='hidden';
-           resultwindow.style.visibility='visible';
-           }
-           else {
-           locator.locationToAddress(webMercatorUtils.webMercatorToGeographic(event.mapPoint), 100).then(function(event){
-            if (event.address) {
-              var address = {Address: event.address};
-              var location = webMercatorUtils.geographicToWebMercator(event.location)}
-              document.getElementById("resultwindow").innerHTML = address["Address"] + 
-              " is located in a: " + "<span style='font-weight:bold; font-size:100%;' >"  + attribute["Tier"] + 
-              " Tier" + "</span>"; 
-           loadingbar.style.visibility='hidden';
-           resultwindow.style.visibility='visible';
-              });
-             }; 
-           document.getElementById("info") = search;
-            });
-            
-       });
-       
-/* var slideSource = document.getElementById('resultwindow');
-
-document.getElementById('btn-closeLegend').onclick = function () {
-  legend.style.visibility='hidden';
-  console.log('hi');
-} */
-   
-       
-  });
-     
-     
-$(document).ready(function(){
-  $('#btn-closeLegend').click(function(){
-    $("#legend").fadeOut("medium");
-    $("#show_legend_button").fadeIn("medium");
-  });
-});
-
-$(document).ready(function(){
-  $('#show_legend_button').click(function(){
-    $("#legend").fadeIn("medium");
-    $("#show_legend_button").fadeOut("medium");
-  });
-});
-
-      
-   
-      
  
-      
-    </script>
-  </head>
 
-  <body>
-    <div id="helptext"><strong>&nbspClick The Map or Enter an Address Below to Retrieve Your Rurality Tier.</strong></div>
-    <div id="searchbar"></div>
-    <div id="resultwindow"></div>
-    <div id="loadingbar" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-    <div id="viewDiv"></div>  
-    <button id = "show_legend_button" style="display:none" class = "close_legend_button"><i class="fa fa-bars"></i></button><br><br>
+         var template = {
 
+        title: 'Rural Tier'
 
-       <div id ="legend" class="map-legend">
-            <table>
-                <thead>
-                    <tr>
-                        <td colspan="3"><span class="icon icon-list"></span> <span class="map-legend-name">Rurality Tiers</span>
-                            <button id="btn-closeLegend" class="close"><span class="close">&times;</span> <span class="sr-only">Hide legend</span></button>
-                        </td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#6F6F6F"></div>
-                        </td>
-                        <td>Extremely Rural</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#803535 "></div>
-                        </td>
-                        <td>Less Rural</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#329AAF"></div>
-                        </td>
-                        <td>Rural</td>
-                    </tr>
+      }
+
+           
+
+            // Instantiate Feature Layyer
+
+            var vectorTileLayer = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/RDOF_Hexes/VectorTileServer"});
+
+            var featureLayer = new FeatureLayer({url:"https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/rdof_904_ver3/FeatureServer",
+
+                                                 outFields: ['*'],
+
+                                                 visible:false,
+
+                                                 popupTemplate: template});
+
+            map.add(vectorTileLayer);
+
+            map.add(featureLayer);
+
+           
+
+ 
+
+          
+
+           var search = new Search({container: "searchbar"});
+
+           resultwindow.style.visibility='hidden';
+
+           loadingbar.style.visibility='hidden';
+
+          
+
+           
+
+        // Outer Function to Add Point and Retrieve Rurality Tier from Search Bar
+
+           search.on('search-complete', function(result){
+
+          
+
+            // Show Result Window
+
+            resultwindow.style.visibility='visible'
+
+             
+
+            if(result.results && result.results.length > 0 && result.results[0].results && result.results[0].results.length > 0){
+
+            var geom = result.results[0].results[0].feature.geometry;
+
+            }       
+
+            
+
+            // Set Text if No Rural Tier
+
+            document.getElementById("resultwindow").innerHTML = 'The address provided is not in a rural tier.';
+
+           
+
+            // Clear Point from Previous Query
+
+            view.graphics.removeAll();
+
+           
+
+            // Construct Point Symbol and Add it When Search Completes
+
+            var point = { type: "point",  longitude: geom.longitude, latitude: geom.latitude};
+
+            var markerSymbol = { type: "simple-marker",  color: [226, 119, 40]};
+
+            var pointGraphic = new Graphic({geometry: point, symbol: markerSymbol});
+
+            view.graphics.add(pointGraphic);
+
+          
+
+            // Zoom to New Point
+
+            view.goTo({center: [geom.longitude, geom.latitude], zoom: 10}, {animate: true, duration: 2000});
+
+        
+
+ 
+
+       });
+
+         
+
      
-                </tbody>
-            </table>
-        </div>
 
-
-
+ 
 
     
+
+     
+
+     
+
+     
+
+     helptext.style.visibility='hidden';
+     hex_count.style.visibility='hidden';
+
+      // Outer Function to Add Point and Retrieve Rurality Tier from Click Event
+
+          view.on('click', function (event) {
+
+             helptext.style.visibility='visible';
+            hex_count.style.visibility='visible';
+
+          // Remove Graphics from Previous Click
+
+           view.graphics.removeAll();
+
+          
+
+          
+
+          // Get Coords on Mouse Click Location
+
+           var clickcoords = view.toMap({x: event.x, y: event.y});
+
+         
+
+          // Construct Point Symbol and Add to Click Location
+
+           var point = { type: "point",  longitude: clickcoords.longitude, latitude: clickcoords.latitude};
+           
+           
+           var circleGeometry = new Circle({
+              center: [ clickcoords.longitude, clickcoords.latitude ],
+              geodesic: true,
+              numberOfPoints: 100,
+              radius: 500,
+              radiusUnit: "kilometers"
+            });
+
+            view.graphics.add(new Graphic({
+               geometry: circleGeometry,
+               symbol: {
+               type: "simple-fill",
+               style: "none",
+               outline: {
+                width: 3,
+               color: "white"
+    }
+  }
+}));
+           
+           
+
+        
+
+           
+
+// query for the sum of the population in all features
+let sumPopulation = {
+  onStatisticField: "Locations",  // service field for 2015 population
+  outStatisticFieldName: "QuerySum",
+  statisticType: "sum"
+};
+
+
+let query = featureLayer.createQuery();
+
+query.geometry = circleGeometry  
+
+query.outStatistics = [sumPopulation];
+
+featureLayer.queryFeatures(query).then(function(response){
+     let stats = response.features[0].attributes;
+     var location_value = stats.QuerySum;
+     
+     document.getElementById("helptext").innerHTML = "<strong>Total Auction 904 Eligible Loctions in Selected 500 Km Radius: </strong>" +  location_value;
+     console.log("Total Locations " + stats.QuerySum);
+  });
+
+
+ 
+// query for the number of hexes in the circle
+ let sumHexes= {
+  onStatisticField: "hex_id", 
+  outStatisticFieldName: "QueryCount",
+  statisticType: "count"
+};
+
+
+let query_count = featureLayer.createQuery();
+
+query_count.geometry = circleGeometry  
+
+query_count.outStatistics = [sumHexes];
+
+featureLayer.queryFeatures(query_count).then(function(response){
+     let stats = response.features[0].attributes;
+     var hex_count = stats.QueryCount;
+     
+     document.getElementById("hex_count").innerHTML = "<strong>Total Hexes in Selected 500 Km Radius: </strong>" +  hex_count;
+     console.log("Total Hexes " + stats.QueryCount);
+  });
+
+
+
+
+
+
+
+
+
+
+
+           
+
+       });
+
+      
+
+       
+
+  });
+
+    
+
+     
+
+$(document).ready(function(){
+
+  $('#btn-closeLegend').click(function(){
+
+    $("#legend").fadeOut("medium");
+
+    $("#show_legend_button").fadeIn("medium");
+
+  });
+
+});
+
+ 
+
+$(document).ready(function(){
+
+  $('#show_legend_button').click(function(){
+
+    $("#legend").fadeIn("medium");
+
+    $("#show_legend_button").fadeOut("medium");
+
+  });
+
+});
+
+ 
+
+     
+
+   
+
+      
+
+ 
+
+      
+
+    </script>
+
+  </head>
+
+ 
+
+  <body>
+
+    <div id="helptext"><strong>&nbsp</strong></div>
+    <div id="hex_count"><strong>&nbsp</strong></div>
+
+
+    <div id="resultwindow"></div>
+
+    <div id="loadingbar" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+
+    <div id="viewDiv"></div> 
+
+    <button id = "show_legend_button" style="display:none" class = "close_legend_button"><i class="fa fa-bars"></i></button><br><br>
+
+ 
+
+ 
+
+       <div id ="legend" class="map-legend">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <td colspan="3"><span class="icon icon-list"></span> <span class="map-legend-name">Rurality Tiers</span>
+
+                            <button id="btn-closeLegend" class="close"><span class="close">&times;</span> <span class="sr-only">Hide legend</span></button>
+
+                        </td>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+
+                            <div class="key-symbol" style="background-color:#6F6F6F"></div>
+
+                        </td>
+
+                        <td>Extremely Rural</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+
+                            <div class="key-symbol" style="background-color:#803535 "></div>
+
+                        </td>
+
+                        <td>Less Rural</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+
+                            <div class="key-symbol" style="background-color:#329AAF"></div>
+
+                        </td>
+
+                        <td>Rural</td>
+
+                    </tr>
+
+    
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+ 
+
+ 
+
+ 
+
+ 
+
+   
+
   </body>
-  
+
+ 
+
 </html>
